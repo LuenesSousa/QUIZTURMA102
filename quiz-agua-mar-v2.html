@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Quiz - Energia Sustentável do Mar</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(to right, #006064, #00bcd4);
+      color: #fff;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .quiz-container {
+      background: rgba(255, 255, 255, 0.95);
+      color: #333;
+      padding: 30px;
+      border-radius: 12px;
+      max-width: 600px;
+      width: 90%;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+      text-align: center;
+      animation: fadeIn 1s ease-in-out;
+    }
+    @keyframes fadeIn {
+      from {opacity: 0; transform: translateY(-20px);}
+      to {opacity: 1; transform: translateY(0);}
+    }
+    h1 {
+      margin-bottom: 20px;
+      font-size: 1.8em;
+      color: #006064;
+    }
+    #question {
+      font-size: 1.2em;
+      margin-bottom: 15px;
+    }
+    #options button {
+      margin: 8px 0;
+      width: 100%;
+      padding: 12px;
+      font-size: 16px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      background: #e0f7fa;
+      transition: background 0.3s;
+    }
+    #options button:hover {
+      background: #b2ebf2;
+    }
+    .correct { background: #c8e6c9 !important; }
+    .incorrect { background: #ffcdd2 !important; }
+    #next-btn, #restart-btn {
+      margin-top: 20px;
+      padding: 10px 20px;
+      font-size: 16px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      background: #00796b;
+      color: #fff;
+    }
+  </style>
+</head>
+<body>
+  <div class="quiz-container">
+    <h1>Quiz: Energia Sustentável do Mar 🌊</h1>
+    <div id="quiz">
+      <div id="question"></div>
+      <div id="options"></div>
+      <button id="next-btn" style="display:none;">Próxima Pergunta</button>
+    </div>
+    <div id="result" style="display:none;">
+      <h2>Resultado Final 🎉</h2>
+      <p id="score"></p>
+      <button id="restart-btn">Recomeçar</button>
+    </div>
+  </div>
+
+  <script>
+    const quizData = [
+      {
+        question: "Qual a principal vantagem da energia gerada pela água do mar?",
+        options: [
+          "É renovável e abundante",
+          "Gera muito CO₂",
+          "É barata mas poluente",
+          "Depende de grandes reservatórios"
+        ],
+        answer: 0
+      },
+      {
+        question: "Como se chama a tecnologia que aproveita a diferença de salinidade?",
+        options: [
+          "Energia osmótica",
+          "Energia térmica",
+          "Energia eólica",
+          "Energia solar"
+        ],
+        answer: 0
+      },
+      {
+        question: "A energia da maré é baseada em:",
+        options: [
+          "Salinidade",
+          "Correntes oceânicas",
+          "Gravidade da Lua",
+          "Temperatura da água"
+        ],
+        answer: 2
+      },
+      {
+        question: "O que pode limitar usinas de energia mareomotriz?",
+        options: [
+          "Baixo potencial energético",
+          "Impacto ambiental local",
+          "Falta de tecnologia",
+          "Alto custo da água"
+        ],
+        answer: 1
+      },
+      {
+        question: "Qual país é líder em energia das marés?",
+        options: [
+          "Canadá",
+          "França",
+          "Brasil",
+          "Japão"
+        ],
+        answer: 1
+      },
+      {
+        question: "O que são correntes oceânicas utilizadas para gerar energia?",
+        options: [
+          "Ventos marítimos",
+          "Movimentos contínuos da água do mar",
+          "Ondas causadas por navios",
+          "Tsunamis"
+        ],
+        answer: 1
+      },
+      {
+        question: "A energia térmica oceânica usa a diferença de:",
+        options: [
+          "Salinidade entre regiões",
+          "Temperatura entre superfície e fundo do mar",
+          "Correntes e marés",
+          "Pressão atmosférica"
+        ],
+        answer: 1
+      },
+      {
+        question: "Qual é um benefício ambiental da energia do mar?",
+        options: [
+          "Alta emissão de carbono",
+          "Baixo impacto ambiental e renovabilidade",
+          "Requer desmatamento",
+          "Consome muita água potável"
+        ],
+        answer: 1
+      }
+    ];
+
+    let current = 0;
+    let score = 0;
+
+    const questionEl = document.getElementById("question");
+    const optionsEl = document.getElementById("options");
+    const nextBtn = document.getElementById("next-btn");
+    const resultEl = document.getElementById("result");
+    const scoreEl = document.getElementById("score");
+    const quizEl = document.getElementById("quiz");
+    const restartBtn = document.getElementById("restart-btn");
+
+    function loadQuestion() {
+      const item = quizData[current];
+      questionEl.textContent = item.question;
+      optionsEl.innerHTML = "";
+      item.options.forEach((opt, i) => {
+        const btn = document.createElement("button");
+        btn.textContent = opt;
+        btn.addEventListener("click", () => selectAnswer(i));
+        optionsEl.appendChild(btn);
+      });
+    }
+
+    function selectAnswer(idx) {
+      const buttons = optionsEl.querySelectorAll("button");
+      buttons.forEach((btn, i) => {
+        btn.disabled = true;
+        btn.classList.add(i === quizData[current].answer ? "correct" : "incorrect");
+        if (i === idx && i === quizData[current].answer) {
+          score++;
+        }
+      });
+      nextBtn.style.display = "inline-block";
+    }
+
+    nextBtn.addEventListener("click", () => {
+      current++;
+      nextBtn.style.display = "none";
+      if (current < quizData.length) {
+        loadQuestion();
+      } else {
+        showResult();
+      }
+    });
+
+    function showResult() {
+      quizEl.style.display = "none";
+      resultEl.style.display = "block";
+      scoreEl.textContent = `Você acertou ${score} de ${quizData.length} perguntas.`;
+    }
+
+    restartBtn.addEventListener("click", () => {
+      current = 0;
+      score = 0;
+      quizEl.style.display = "block";
+      resultEl.style.display = "none";
+      loadQuestion();
+    });
+
+    loadQuestion();
+  </script>
+</body>
+</html>
